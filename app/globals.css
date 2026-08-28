@@ -1,0 +1,60 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 252 25% 98%;
+    --foreground: 240 10% 12%;
+  }
+
+  .dark {
+    --background: 240 14% 6%;
+    --foreground: 240 20% 95%;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900 dark:bg-[#0a0a12] dark:text-slate-100 antialiased;
+  }
+
+  ::selection {
+    @apply bg-green-500/30;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/70 backdrop-blur-xl dark:bg-white/[0.04] border border-white/40 dark:border-white/10;
+  }
+
+  .card-surface {
+    @apply bg-white/80 dark:bg-white/[0.03] backdrop-blur-xl border border-slate-200/70 dark:border-white/10 shadow-soft;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-green-500 via-emerald-500 to-teal-400 bg-clip-text text-transparent;
+  }
+
+  .animated-gradient {
+    background-size: 200% 200%;
+    @apply animate-gradient-move bg-gradient-to-r from-green-500 via-emerald-500 to-teal-400;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@layer utilities {
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-[#0a0a12];
+  }
+}
