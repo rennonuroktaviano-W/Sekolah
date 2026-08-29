@@ -21,9 +21,9 @@ export const kanbanKasus = [
     title: "Baru",
     tone: "indigo",
     cards: [
-      { id: "c1", siswa: "Raka Ardiansyah", kelas: "9A", kategori: "Sikap", keseriusan: "rendah", tanggal: "20 Mar" },
-      { id: "c2", siswa: "Dewi Lestari", kelas: "9A", kategori: "Sosial", keseriusan: "tinggi", tanggal: "19 Mar" },
-      { id: "c3", siswa: "Bima Saputra", kelas: "9B", kategori: "Akademik", keseriusan: "sedang", tanggal: "18 Mar" },
+      { id: "c1", siswa: "Raka Ardiansyah", kelas: "X RPL", kategori: "Sikap", keseriusan: "rendah", tanggal: "20 Mar" },
+      { id: "c2", siswa: "Dewi Lestari", kelas: "X RPL", kategori: "Sosial", keseriusan: "tinggi", tanggal: "19 Mar" },
+      { id: "c3", siswa: "Bima Saputra", kelas: "X TKJ", kategori: "Akademik", keseriusan: "sedang", tanggal: "18 Mar" },
     ],
   },
   {
@@ -31,8 +31,8 @@ export const kanbanKasus = [
     title: "Dalam Penanganan",
     tone: "amber",
     cards: [
-      { id: "c4", siswa: "Eko Prasetyo", kelas: "9B", kategori: "Keterlambatan", keseriusan: "sedang", tanggal: "16 Mar" },
-      { id: "c5", siswa: "Citra Ayu", kelas: "9A", kategori: "Sikap", keseriusan: "rendah", tanggal: "15 Mar" },
+      { id: "c4", siswa: "Eko Prasetyo", kelas: "X TKJ", kategori: "Keterlambatan", keseriusan: "sedang", tanggal: "16 Mar" },
+      { id: "c5", siswa: "Citra Ayu", kelas: "X RPL", kategori: "Sikap", keseriusan: "rendah", tanggal: "15 Mar" },
     ],
   },
   {
@@ -40,9 +40,9 @@ export const kanbanKasus = [
     title: "Selesai",
     tone: "green",
     cards: [
-      { id: "c6", siswa: "Hendra Wijaya", kelas: "9A", kategori: "Konseling", keseriusan: "rendah", tanggal: "12 Mar" },
-      { id: "c7", siswa: "Gita Pramudita", kelas: "9A", kategori: "Konseling", keseriusan: "rendah", tanggal: "10 Mar" },
-      { id: "c8", siswa: "Fajar Nugroho", kelas: "9B", kategori: "Sosial", keseriusan: "sedang", tanggal: "8 Mar" },
+      { id: "c6", siswa: "Hendra Wijaya", kelas: "XI RPL", kategori: "Konseling", keseriusan: "rendah", tanggal: "12 Mar" },
+      { id: "c7", siswa: "Gita Pramudita", kelas: "XI RPL", kategori: "Konseling", keseriusan: "rendah", tanggal: "10 Mar" },
+      { id: "c8", siswa: "Fajar Nugroho", kelas: "XI TKJ", kategori: "Sosial", keseriusan: "sedang", tanggal: "8 Mar" },
     ],
   },
 ];
@@ -61,7 +61,7 @@ export const riwayatSiswaEdit = [
     tanggal: "25 Feb 2026",
     tipe: "konseling",
     title: "Konseling akademik",
-    detail: "Sesi konseling perbaikan fokus belajar IPA.",
+    detail: "Sesi konseling perbaikan fokus belajar Informatika.",
     tone: "indigo",
   },
   {

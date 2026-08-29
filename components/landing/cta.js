@@ -18,8 +18,10 @@ export function CTA() {
               Siap membawa sekolahmu ke era digital?
             </h2>
             <p className="relative mx-auto mt-4 max-w-xl text-white/90">
-              Bergabunglah dengan sekolah-sekolah yang sudah memulai
-              transformasi akademik mereka bersama SIAS.
+              Bergabunglah bersama{" "}
+              <span className="font-semibold text-white">SMK Bakti Idhata</span> —
+              sekolah digital yang siap membawa akademik dan kariermu ke era
+              teknologi.
             </p>
             <div className="relative mt-8 flex flex-wrap justify-center gap-3">
               <TransitionLink href="/login">

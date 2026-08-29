@@ -19,12 +19,12 @@ import { useState } from "react";
 import { trenNilaiKelas, daftarNilaiSiswa, siswaMenurun } from "@/data";
 
 const chartOf = {
-  "9A": "kelas9A",
-  "9B": "kelas9B",
+  "X RPL": "xRpl",
+  "X TKJ": "xTkj",
 };
 
 export default function RekapPage() {
-  const [kelas, setKelas] = useState("9A");
+  const [kelas, setKelas] = useState("X RPL");
   const key = chartOf[kelas];
 
   return (
@@ -36,8 +36,8 @@ export default function RekapPage() {
         </div>
         <Tabs
           tabs={[
-            { value: "9A", label: "Kelas 9A" },
-            { value: "9B", label: "Kelas 9B" },
+            { value: "X RPL", label: "Kelas X RPL" },
+            { value: "X TKJ", label: "Kelas X TKJ" },
           ]}
           active={kelas}
           onChange={setKelas}
@@ -87,8 +87,8 @@ export default function RekapPage() {
                   contentStyle={{ background: "rgba(255,255,255,0.95)", border: "1px solid #e2e8f0", borderRadius: 12, fontSize: 12 }}
                 />
                 <Legend />
-                <Line type="monotone" dataKey="kelas9A" name="Kelas 9A" stroke="#14b8a6" strokeWidth={2.5} />
-                <Line type="monotone" dataKey="kelas9B" name="Kelas 9B" stroke="#f59e0b" strokeWidth={2.5} />
+                <Line type="monotone" dataKey="xRpl" name="Kelas X RPL" stroke="#14b8a6" strokeWidth={2.5} />
+                <Line type="monotone" dataKey="xTkj" name="Kelas X TKJ" stroke="#f59e0b" strokeWidth={2.5} />
               </ComposedChart>
             </ResponsiveContainer>
           </CardContent>

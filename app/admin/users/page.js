@@ -205,7 +205,7 @@ export default function UsersPage() {
               <div className="space-y-3">
                 <Input label="NIS / NIP" />
                 <Input label="Password" type="password" />
-                {roleFilter === "Siswa" && <Select label="Kelas" options={[{ value: "9A", label: "9A" }, { value: "9B", label: "9B" }]} />}
+                {roleFilter === "Siswa" && <Select label="Kelas" options={[{ value: "X RPL", label: "X RPL" }, { value: "X TKJ", label: "X TKJ" }, { value: "X DKV", label: "X DKV" }, { value: "XI RPL", label: "XI RPL" }, { value: "XI TKJ", label: "XI TKJ" }, { value: "XI DKV", label: "XI DKV" }]} />}
                 <div className="rounded-xl bg-emerald-50 p-3 text-sm text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
                   User akan diundang melalui email setelah dibuat.
                 </div>

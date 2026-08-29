@@ -10,7 +10,7 @@ export const guruStatistik = [
 export const kelasGuru = [
   {
     id: "k1",
-    nama: "Kelas 9A",
+    nama: "X RPL",
     mapel: "Matematika",
     siswa: 24,
     rataRata: 84.2,
@@ -18,7 +18,7 @@ export const kelasGuru = [
   },
   {
     id: "k2",
-    nama: "Kelas 9B",
+    nama: "X TKJ",
     mapel: "Matematika",
     siswa: 23,
     rataRata: 81.5,
@@ -26,7 +26,7 @@ export const kelasGuru = [
   },
   {
     id: "k3",
-    nama: "Kelas 8A",
+    nama: "XI RPL",
     mapel: "Matematika",
     siswa: 25,
     rataRata: 86.1,
@@ -34,7 +34,7 @@ export const kelasGuru = [
   },
   {
     id: "k4",
-    nama: "Kelas 8B",
+    nama: "XI TKJ",
     mapel: "Matematika",
     siswa: 22,
     rataRata: 79.8,
@@ -42,11 +42,19 @@ export const kelasGuru = [
   },
   {
     id: "k5",
-    nama: "Kelas 7A",
+    nama: "XII RPL",
     mapel: "Matematika",
     siswa: 26,
     rataRata: 87.4,
     progressInput: 70,
+  },
+  {
+    id: "k6",
+    nama: "XII TKJ",
+    mapel: "Matematika",
+    siswa: 21,
+    rataRata: 82.7,
+    progressInput: 62,
   },
 ];
 
@@ -149,27 +157,27 @@ export const distribusiNilai = [
 ];
 
 export const trenNilaiKelas = [
-  { bulan: "Sep", kelas9A: 80, kelas9B: 78 },
-  { bulan: "Okt", kelas9A: 82, kelas9B: 79 },
-  { bulan: "Nov", kelas9A: 83, kelas9B: 80 },
-  { bulan: "Des", kelas9A: 84, kelas9B: 81 },
-  { bulan: "Jan", kelas9A: 85, kelas9B: 82 },
-  { bulan: "Feb", kelas9A: 87, kelas9B: 83 },
-  { bulan: "Mar", kelas9A: 86, kelas9B: 82 },
+  { bulan: "Sep", xRpl: 80, xTkj: 78 },
+  { bulan: "Okt", xRpl: 82, xTkj: 79 },
+  { bulan: "Nov", xRpl: 83, xTkj: 80 },
+  { bulan: "Des", xRpl: 84, xTkj: 81 },
+  { bulan: "Jan", xRpl: 85, xTkj: 82 },
+  { bulan: "Feb", xRpl: 87, xTkj: 83 },
+  { bulan: "Mar", xRpl: 86, xTkj: 82 },
 ];
 
 export const siswaMenurun = [
   {
     id: "drop1",
     nama: "Bima Saputra",
-    kelas: "9B",
+    kelas: "X TKJ",
     penurunan: "🔻 -12 poin dalam 3 bulan",
     nilaiSekarang: 72,
   },
   {
     id: "drop2",
     nama: "Eko Prasetyo",
-    kelas: "9B",
+    kelas: "X TKJ",
     penurunan: "🔻 -8 poin dalam 2 bulan",
     nilaiSekarang: 67,
   },

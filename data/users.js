@@ -8,14 +8,14 @@ export const users = {
       {
         id: "sis-1",
         name: "Raka Ardiansyah",
-        class: "Kelas 9A",
+        class: "X RPL",
         waliKelas: "Ibu Maya Sari",
         nis: "2023001",
       },
       {
         id: "sis-2",
         name: "Dinda Putri",
-        class: "Kelas 7C",
+        class: "XI TKJ",
         waliKelas: "Pak Budi",
         nis: "2024012",
       },
@@ -38,9 +38,4 @@ export const users = {
   },
 };
 
-export const statsLanding = [
-  { label: "Siswa Terdaftar", value: 2450, suffix: "+" },
-  { label: "Guru Aktif", value: 128 },
-  { label: "Tingkat Kepuasan Ortu", value: 94, suffix: "%" },
-  { label: "Prestasi Diraih", value: 312 },
-];
+

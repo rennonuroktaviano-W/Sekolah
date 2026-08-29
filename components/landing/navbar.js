@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
-import { GraduationCap, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { TransitionLink } from "@/components/ui/page-transition";
 import { cn } from "@/lib/utils";
+import { SCHOOL } from "@/data/school";
+
+const navLinks = ["Fitur", "Tentang", "Cara Kerja", "Testimoni"];
 
 export function Navbar() {
   const { scrollY } = useScroll();
@@ -36,20 +39,26 @@ export function Navbar() {
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
       >
-        <TransitionLink href="/" className="flex items-center gap-2.5">
+        <TransitionLink href="/" className="flex min-w-0 items-center gap-2.5">
           <motion.div
-            whileHover={{ rotate: -8, scale: 1.05 }}
-            className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 via-green-500 to-teal-400 text-white shadow-lg shadow-green-500/30"
+            whileHover={{ rotate: -5, scale: 1.05 }}
+            className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white p-1.5 shadow-lg shadow-green-900/10 ring-1 ring-slate-200/70 dark:ring-white/15"
           >
-            <GraduationCap className="h-6 w-6" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={SCHOOL.logo}
+              alt={SCHOOL.logoAlt}
+              className="h-full w-full object-contain"
+              draggable={false}
+            />
           </motion.div>
-          <span className="font-display text-lg font-bold tracking-tight">
-            SIAS<span className="text-gradient">.</span>
+          <span className="truncate font-display text-base font-bold tracking-tight sm:text-lg">
+            {SCHOOL.name}
           </span>
         </TransitionLink>
 
         <div className="hidden items-center gap-7 text-sm font-medium text-slate-600 dark:text-slate-300 md:flex">
-          {["Fitur", "Cara Kerja", "Testimoni"].map((l) => (
+          {navLinks.map((l) => (
             <a
               key={l}
               href={`#${l.toLowerCase().replace(" ", "-")}`}
@@ -60,7 +69,7 @@ export function Navbar() {
           ))}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <ThemeToggle />
           <TransitionLink href="/login">
             <Button size="sm" className="hidden sm:inline-flex">

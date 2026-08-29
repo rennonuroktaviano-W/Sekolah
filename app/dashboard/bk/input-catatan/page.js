@@ -51,9 +51,9 @@ export default function InputCatatanPage() {
               <Select
                 label="Siswa"
                 options={[
-                  { value: "raka", label: "Raka Ardiansyah — 9A" },
-                  { value: "bima", label: "Bima Saputra — 9B" },
-                  { value: "cita", label: "Citra Ayu — 9A" },
+                  { value: "raka", label: "Raka Ardiansyah — X RPL" },
+                  { value: "bima", label: "Bima Saputra — X TKJ" },
+                  { value: "cita", label: "Citra Ayu — X RPL" },
                 ]}
               />
               <div className="grid gap-4 sm:grid-cols-2">

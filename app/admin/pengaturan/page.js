@@ -7,13 +7,13 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast";
-import { bobotPenilaian } from "@/data";
+import { bobotPenilaian, SCHOOL } from "@/data";
 
 const presetColors = ["#22c55e", "#14b8a6", "#10b981", "#f59e0b", "#14532d", "#ef4444"];
 
 export default function PengaturanPage() {
   const [brandColor, setBrandColor] = useState("#22c55e");
-  const [sekolah, setSekolah] = useState("SMP Nusantara Jaya");
+  const [sekolah, setSekolah] = useState(SCHOOL.name);
   const [weights, setWeights] = useState(bobotPenilaian);
   const { toast } = useToast();
 

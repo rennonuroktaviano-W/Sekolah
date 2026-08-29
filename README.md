@@ -30,7 +30,7 @@
 
 ## ⚡ TL;DR
 
-SIAS adalah sebuah **"command center" web** untuk ekosistem sekolah — menghubungkan **Guru/BK, Siswa & Orang Tua, dan Admin** dalam satu sistem terpadu untuk input nilai, pemantauan akademik, dan pengelolaan data sekolah.
+SMK Bakti Idhata adalah website portal akademik digital — **"command center" web** untuk ekosistem sekolah — menghubungkan **Guru/BK, Siswa & Orang Tua, dan Admin** dalam satu sistem terpadu untuk input nilai, pemantauan akademik, dan pengelolaan data sekolah.
 
 Bukan dashboard template pasaran. Ini **product-grade UI** penuh animasi, glassmorphism, dark-mode native, dan micro-interaction di setiap sudut — dibangun dengan **Next.js 14 (App Router)**, **Tailwind CSS**, **Framer Motion**, dan **Recharts**.
 
@@ -198,7 +198,7 @@ Proyek ini adalah proyek pendidikan. Dibuat dengan ❤️ untuk ekosistem pendid
 <div align="center">
 
 ```
-▓▒░ ░▒▓  SIAS ▓▒░ ░▒▓
+▓▒░ ░▒▓  SMK Bakti Idhata ▓▒░ ░▒▓
 ```
 
 **"Semua kebutuhan akademik, dalam satu command center."**

@@ -39,22 +39,22 @@ export const jadwalPelajaran = {
       kelas: [
         { time: "07:00-08:30", mapel: "Matematika", guru: "Pak Dede", ruang: "R1" },
         { time: "08:30-10:00", mapel: "Bahasa Indonesia", guru: "Ibu Maya", ruang: "R2" },
-        { time: "10:15-11:45", mapel: "IPA", guru: "Bu Ratna", ruang: "Lab 1" },
+        { time: "10:15-11:45", mapel: "Informatika", guru: "Bu Ratna", ruang: "Lab 1" },
       ],
     },
     {
       day: "Selasa",
       kelas: [
         { time: "07:00-08:30", mapel: "Bahasa Inggris", guru: "Pak Rio", ruang: "R3" },
-        { time: "08:30-10:00", mapel: "PPKN", guru: "Bu Ani", ruang: "R1" },
-        { time: "10:15-11:45", mapel: "Olahraga", guru: "Pak Joko", ruang: "Lap" },
+        { time: "08:30-10:00", mapel: "PPKn", guru: "Bu Ani", ruang: "R1" },
+        { time: "10:15-11:45", mapel: "PJOK", guru: "Pak Joko", ruang: "Lap" },
       ],
     },
     {
       day: "Rabu",
       kelas: [
-        { time: "07:00-08:30", mapel: "IPS", guru: "Bu Fitri", ruang: "R2" },
-        { time: "08:30-10:00", mapel: "Seni Budaya", guru: "Pak Doni", ruang: "R4" },
+        { time: "07:00-08:30", mapel: "Produktif RPL", guru: "Pak Doni", ruang: "R2" },
+        { time: "08:30-10:00", mapel: "Produktif DKV", guru: "Bu Fitri", ruang: "R4" },
         { time: "10:15-11:45", mapel: "Matematika", guru: "Pak Dede", ruang: "R1" },
       ],
     },
@@ -94,7 +94,7 @@ export const catatanBK = [
     kategoriLabel: "Konseling",
     title: "Sesi Konseling Akademik",
     deskripsi:
-      "Konseling intensif membantu Raka meningkatkan fokus belajar pada mata pelajaran IPA. Perkembangan menunjukkan peningkatan.",
+      "Konseling intensif membantu Raka meningkatkan fokus belajar pada mata pelajaran Informatika. Perkembangan menunjukkan peningkatan.",
     tone: "indigo",
   },
   {
@@ -122,8 +122,8 @@ export const notifikasi = [
   {
     id: "n1",
     type: "nilai",
-    title: "Nilai UAS IPA telah diinput",
-    desc: "Nilai UAS IPA Raka sudah tersedia. Lihat perubahan.",
+    title: "Nilai UAS Informatika telah diinput",
+    desc: "Nilai UAS Informatika Raka sudah tersedia. Lihat perubahan.",
     time: "5 menit lalu",
     unread: true,
   },
@@ -167,7 +167,7 @@ export const pengumuman = [
     title: "Pembagian Rapor",
     date: "28 Maret 2026",
     kategori: "Umum",
-    ringkasan: "Pembagian rapor akan dilakukan secara online melalui platform SIAS.",
+    ringkasan: "Pembagian rapor akan dilakukan secara online melalui portal akademik SMK Bakti Idhata.",
   },
   {
     id: "p3",

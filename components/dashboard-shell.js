@@ -1,15 +1,15 @@
 ﻿"use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { Bell, Menu, X, LayoutDashboard, LogOut, Search } from "lucide-react";
+import { Bell, Menu, X, LogOut, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { notifikasi } from "@/data";
+import { TransitionLink } from "@/components/ui/page-transition";
+import { notifikasi, SCHOOL } from "@/data";
 
 const ACCENT_STYLES = {
   indigo: {
@@ -48,8 +48,9 @@ export function DashboardShell({ user, role, accent = "indigo", accentName, navI
   const NavContent = ({ mobile }) => (
     <div className="flex h-full flex-col">
       <div className={cn("flex items-center gap-2.5 px-5", mobile ? "py-4" : "py-6")}>
-        <div className={cn("flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br text-white", styles.grad)}>
-          <LayoutDashboard className="h-5 w-5" />
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-1 ring-1 ring-slate-200/70 dark:ring-white/15">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={SCHOOL.logo} alt={SCHOOL.logoAlt} className="h-full w-full object-contain" draggable={false} />
         </div>
         <div>
           <p className="font-display text-sm font-bold leading-tight">{accentName}</p>
@@ -61,7 +62,7 @@ export function DashboardShell({ user, role, accent = "indigo", accentName, navI
         {navItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
           return (
-            <Link
+            <TransitionLink
               key={item.href}
               href={item.href}
               onClick={() => mobile && setMobileOpen(false)}
@@ -81,7 +82,7 @@ export function DashboardShell({ user, role, accent = "indigo", accentName, navI
               )}
               <item.icon className="h-[18px] w-[18px] transition-transform group-hover:scale-110" />
               {item.label}
-            </Link>
+            </TransitionLink>
           );
         })}
       </div>
@@ -212,9 +213,9 @@ export function DashboardShell({ user, role, accent = "indigo", accentName, navI
 
         <main className="px-4 py-6 lg:px-8 lg:py-8">
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, x: 16 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             key={pathname}
           >
             {children}
@@ -227,7 +228,7 @@ export function DashboardShell({ user, role, accent = "indigo", accentName, navI
         {navItems.slice(0, 5).map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
           return (
-            <Link
+            <TransitionLink
               key={item.href}
               href={item.href}
               className={cn(
@@ -237,7 +238,7 @@ export function DashboardShell({ user, role, accent = "indigo", accentName, navI
             >
               <item.icon className="h-5 w-5" />
               <span className="max-w-16 truncate">{item.label}</span>
-            </Link>
+            </TransitionLink>
           );
         })}
       </nav>

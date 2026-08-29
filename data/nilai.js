@@ -45,9 +45,9 @@ export const nilaiSemester = {
         ],
       },
       {
-        id: "ipa",
-        name: "IPA",
-        icon: "🔬",
+        id: "informatika",
+        name: "Informatika",
+        icon: "💻",
         nilaiAkhir: 80,
         status: "turun",
         statusLabel: "Turun",
@@ -76,7 +76,7 @@ export const nilaiSemester = {
       },
       {
         id: "ppkn",
-        name: "PPKN",
+        name: "PPKn",
         icon: "🇮🇩",
         nilaiAkhir: 84,
         status: "stabil",

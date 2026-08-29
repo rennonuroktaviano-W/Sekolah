@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  GraduationCap,
   Mail,
   Lock,
   ArrowLeft,
@@ -17,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { cn } from "@/lib/utils";
+import { SCHOOL } from "@/data/school";
 import { TransitionLink, useTransitionNav } from "@/components/ui/page-transition";
 
 const roles = [
@@ -86,10 +86,18 @@ export function LoginPage() {
             />
             <div className="relative">
               <div className="flex items-center gap-3 text-white">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
-                  <GraduationCap className="h-7 w-7" />
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white/95 p-1.5 shadow-lg">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={SCHOOL.logo}
+                    alt={SCHOOL.logoAlt}
+                    className="h-full w-full object-contain"
+                    draggable={false}
+                  />
                 </div>
-                <span className="font-display text-xl font-bold">SIAS</span>
+                <span className="min-w-0 font-display text-xl font-bold">
+                  {SCHOOL.name}
+                </span>
               </div>
               <motion.h2
                 key={`${role}-title`}

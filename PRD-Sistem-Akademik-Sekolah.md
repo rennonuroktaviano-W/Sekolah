@@ -1,11 +1,11 @@
-# PRD — Sistem Informasi Akademik Sekolah (SIAS)
+# PRD — Portal Akademik Digital SMK Bakti Idhata
 ### Product Requirement Document · Fase 1: UI/UX Only
 
 ---
 
 ## 1. Ringkasan Produk
 
-**Nama Produk (sementara):** SIAS — Sistem Informasi Akademik Sekolah
+**Nama Produk (sementara):** Portal Akademik Digital SMK Bakti Idhata
 *(boleh diganti sesuai branding sekolah, misal "EduTrack", "Cendekia", dll)*
 
 **Deskripsi Singkat:**

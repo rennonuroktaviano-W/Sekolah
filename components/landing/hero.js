@@ -47,7 +47,7 @@ export function Hero() {
             className="inline-flex items-center gap-2 rounded-full border border-green-200/60 bg-white/60 px-3 py-1.5 text-xs font-medium text-green-600 backdrop-blur dark:border-white/10 dark:bg-white/5 dark:text-green-300"
           >
             <Sparkles className="h-3.5 w-3.5" />
-            Sistem Informasi Akademik Sekolah
+            Portal Akademik Digital · SMK Bakti Idhata
           </motion.div>
 
           <motion.h1
@@ -78,8 +78,10 @@ export function Hero() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="mt-5 max-w-lg text-base text-slate-600 dark:text-slate-300 sm:text-lg"
           >
-            Satu platform untuk guru, siswa, orang tua, dan BK — memantau nilai,
-            kehadiran, dan perkembangan akademik secara real-time dan transparan.
+            Shaping <span className="font-semibold text-emerald-700 dark:text-emerald-300">Technopreneur
+            School for Future</span> — satu platform untuk guru, siswa, orang tua,
+            dan BK; memantau nilai, kehadiran, dan perkembangan akademik secara
+            real-time dan transparan.
           </motion.p>
 
           <motion.div

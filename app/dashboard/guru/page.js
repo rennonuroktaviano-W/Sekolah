@@ -144,7 +144,7 @@ export default function GuruOverview() {
         <Card>
           <CardHeader>
             <CardTitle>Distribusi Nilai</CardTitle>
-            <Badge tone="teal">Kelas 9A</Badge>
+            <Badge tone="teal">Kelas X RPL</Badge>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={200}>
