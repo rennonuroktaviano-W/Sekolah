@@ -1,19 +1,7 @@
 ﻿"use client";
 
 import { motion } from "framer-motion";
-import {
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Legend,
-} from "recharts";
+import dynamic from "next/dynamic";
 import {
   Activity,
   Users,
@@ -24,7 +12,18 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { CountUp } from "@/components/ui/count-up";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { bkRingkasan, statistikPelanggaran, kasusTren, kanbanKasus } from "@/data";
+
+// recharts dimuat lazy agar tidak membebani first-load halaman.
+const PieTypeChart = dynamic(() => import("@/components/charts/pie-type"), {
+  ssr: false,
+  loading: () => <Skeleton className="h-[240px] w-full" />,
+});
+const LineTrendChart = dynamic(() => import("@/components/charts/line-trend"), {
+  ssr: false,
+  loading: () => <Skeleton className="h-[240px] w-full" />,
+});
 
 const statCards = [
   { label: "Kasus Aktif", value: bkRingkasan.kasusAktif, icon: Activity, color: "#f59e0b" },
@@ -72,26 +71,7 @@ export default function BkOverview() {
             <Badge tone="amber">Tahun ini</Badge>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={240}>
-              <PieChart>
-                <Pie
-                  data={statistikPelanggaran}
-                  dataKey="value"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={55}
-                  outerRadius={90}
-                  paddingAngle={3}
-                >
-                  {statistikPelanggaran.map((entry, i) => (
-                    <Cell key={i} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend iconType="circle" />
-              </PieChart>
-            </ResponsiveContainer>
+            <PieTypeChart data={statistikPelanggaran} />
           </CardContent>
         </Card>
 
@@ -102,15 +82,7 @@ export default function BkOverview() {
             <Badge tone="rose">Aktivitas</Badge>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={240}>
-              <LineChart data={kasusTren}>
-                <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="opacity-10" />
-                <XAxis dataKey="bulan" tick={{ fontSize: 11 }} stroke="currentColor" className="opacity-40" />
-                <YAxis tick={{ fontSize: 11 }} stroke="currentColor" className="opacity-40" />
-                <Tooltip />
-                <Line type="monotone" dataKey="kasus" stroke="#f59e0b" strokeWidth={2.5} dot={{ r: 4 }} />
-              </LineChart>
-            </ResponsiveContainer>
+            <LineTrendChart data={kasusTren} />
           </CardContent>
         </Card>
       </div>
@@ -118,11 +90,7 @@ export default function BkOverview() {
       {/* Cases needing attention across columns */}
       <Card className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 opacity-40">
-          <motion.div
-            animate={{ opacity: [0.1, 0.4, 0.1] }}
-            transition={{ repeat: Infinity, duration: 4 }}
-            className="absolute inset-0 bg-gradient-to-r from-amber-400/10 to-rose-400/10"
-          />
+          <div className="absolute inset-0 bg-gradient-to-r from-amber-400/10 to-rose-400/10" />
         </div>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

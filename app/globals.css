@@ -15,6 +15,7 @@
 
   html {
     scroll-behavior: smooth;
+    scroll-padding-top: 88px;
   }
 
   body {
@@ -24,6 +25,38 @@
 
   ::selection {
     @apply bg-green-500/30;
+  }
+}
+
+/* Kompositor-only float (transform), dimatikan otomatis oleh prefers-reduced-motion
+   via blok media query di bawah. Tidak menganimasikan blur/shadow/layout. */
+@keyframes sb-float-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -12px, 0);
+  }
+}
+
+@keyframes sb-float-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, 10px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-sb-float-a {
+    animation: sb-float-a 4s ease-in-out infinite;
+  }
+
+  .animate-sb-float-b {
+    animation: sb-float-b 5s ease-in-out 1s infinite;
   }
 }
 
@@ -40,11 +73,11 @@
 
 @layer components {
   .glass {
-    @apply bg-white/70 backdrop-blur-xl dark:bg-white/[0.04] border border-white/40 dark:border-white/10;
+    @apply bg-white/70 backdrop-blur-md dark:bg-white/[0.04] border border-white/40 dark:border-white/10;
   }
 
   .card-surface {
-    @apply bg-white/80 dark:bg-white/[0.03] backdrop-blur-xl border border-slate-200/70 dark:border-white/10 shadow-soft;
+    @apply bg-white/80 dark:bg-white/[0.03] backdrop-blur-sm border border-slate-200/70 dark:border-white/10 shadow-soft;
   }
 
   .text-gradient {

@@ -2,18 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-  Area,
-  AreaChart,
-} from "recharts";
 import {
   TrendingUp,
   TrendingDown,
@@ -30,6 +20,7 @@ import { CountUp } from "@/components/ui/count-up";
 import { AccordionItem } from "@/components/ui/accordion";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import {
   users,
@@ -40,6 +31,12 @@ import {
   achievements,
   pengumuman,
 } from "@/data";
+
+// recharts dimuat lazy agar tidak membebani first-load halaman.
+const TrendAreaChart = dynamic(() => import("@/components/charts/trend-area"), {
+  ssr: false,
+  loading: () => <Skeleton className="h-[240px] w-full" />,
+});
 
 const statusColors = {
   naik: { color: "#10b981", icon: TrendingUp, label: "Naik" },
@@ -162,28 +159,7 @@ export default function OrtuOverview() {
               <Badge tone="violet">{nilai.semester}</Badge>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={240}>
-                <AreaChart data={nilai.trend}>
-                  <defs>
-                    <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#10b981" stopOpacity={0.3} />
-                      <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="opacity-10" />
-                  <XAxis dataKey="name" tick={{ fontSize: 11 }} stroke="currentColor" className="opacity-40" />
-                  <YAxis tick={{ fontSize: 11 }} stroke="currentColor" className="opacity-40" domain={[0, 100]} />
-                  <Tooltip
-                    contentStyle={{
-                      background: "rgba(255,255,255,0.95)",
-                      border: "1px solid #e2e8f0",
-                      borderRadius: 12,
-                      fontSize: 12,
-                    }}
-                  />
-                  <Area type="monotone" dataKey="value" stroke="#10b981" strokeWidth={2.5} fill="url(#trendFill)" />
-                </AreaChart>
-              </ResponsiveContainer>
+              <TrendAreaChart data={nilai.trend} />
             </CardContent>
           </Card>
 

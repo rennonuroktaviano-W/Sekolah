@@ -1,27 +1,26 @@
 ﻿"use client";
 
 import { motion } from "framer-motion";
-import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-} from "recharts";
+import dynamic from "next/dynamic";
 import { TrendingUp, TrendingDown, Minus, ClipboardList } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AccordionItem } from "@/components/ui/accordion";
 import { ProgressRing } from "@/components/ui/progress-ring";
 import { Tabs } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
 import {
   nilaiSemester,
   perbandinganSemester,
   users,
 } from "@/data";
+
+// recharts dimuat lazy agar tidak membebani first-load halaman.
+const BarCompareChart = dynamic(() => import("@/components/charts/bar-compare"), {
+  ssr: false,
+  loading: () => <Skeleton className="h-[220px] w-full" />,
+});
 
 const statusColors = {
   naik: { color: "#10b981", icon: TrendingUp },
@@ -56,17 +55,7 @@ export default function NilaiPage() {
             <Badge tone="violet">Tren</Badge>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={perbandinganSemester}>
-                <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="opacity-10" />
-                <XAxis dataKey="semester" tick={{ fontSize: 11 }} stroke="currentColor" className="opacity-40" />
-                <YAxis tick={{ fontSize: 11 }} stroke="currentColor" className="opacity-40" domain={[0, 100]} />
-                <Tooltip
-                  contentStyle={{ background: "rgba(255,255,255,0.95)", border: "1px solid #e2e8f0", borderRadius: 12, fontSize: 12 }}
-                />
-                <Bar dataKey="nilai" fill="#10b981" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+            <BarCompareChart data={perbandinganSemester} />
           </CardContent>
         </Card>
       </div>

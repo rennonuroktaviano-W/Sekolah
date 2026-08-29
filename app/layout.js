@@ -1,4 +1,5 @@
 import "./globals.css";
+import { MotionConfig } from "framer-motion";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ToastProvider } from "@/components/ui/toast";
 import { PageTransitionProvider } from "@/components/ui/page-transition";
@@ -55,11 +56,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="id" suppressHydrationWarning>
       <body className="font-sans antialiased">
-        <ThemeProvider>
-          <PageTransitionProvider>
-            <ToastProvider>{children}</ToastProvider>
-          </PageTransitionProvider>
-        </ThemeProvider>
+        <MotionConfig reducedMotion="user">
+          <ThemeProvider>
+            <PageTransitionProvider>
+              <ToastProvider>{children}</ToastProvider>
+            </PageTransitionProvider>
+          </ThemeProvider>
+        </MotionConfig>
       </body>
     </html>
   );

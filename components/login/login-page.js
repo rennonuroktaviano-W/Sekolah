@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Mail,
@@ -40,26 +40,36 @@ export function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [showReset, setShowReset] = useState(false);
   const [shake, setShake] = useState(false);
   const [validUsername, setValidUsername] = useState(false);
+  const submitTimerRef = useRef(null);
+  const shakeTimerRef = useRef(null);
+
+  // Bersihkan timer saat halaman berubah (cegah navigasi/setState tertunda).
+  useEffect(() => {
+    return () => {
+      if (submitTimerRef.current) clearTimeout(submitTimerRef.current);
+      if (shakeTimerRef.current) clearTimeout(shakeTimerRef.current);
+    };
+  }, []);
 
   const active = roles.find((r) => r.id === role);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (loading) return; // kunci klik berulang / Enter berulang
     setError("");
     if (!username || !password) {
       setError("Mohon isi username dan password.");
       setShake(true);
-      setTimeout(() => setShake(false), 500);
+      shakeTimerRef.current = setTimeout(() => setShake(false), 500);
       return;
     }
     setLoading(true);
-    setTimeout(() => {
-      const target = roles.find((r) => r.id === role);
-      navigate(target.route);
-    }, 1200);
+    const target = roles.find((r) => r.id === role);
+    submitTimerRef.current = setTimeout(() => {
+      if (target) navigate(target.route);
+    }, 1000);
   };
 
   return (
@@ -147,7 +157,7 @@ export function LoginPage() {
         </div>
 
         <div className="flex flex-1 items-center justify-center px-4 py-8 sm:px-8">
-          <div className="w-full max-w-md rounded-3xl border border-white/50 bg-white/40 p-6 shadow-lg2 backdrop-blur-xl sm:p-8 dark:border-white/10 dark:bg-white/[0.05]">
+          <div className="w-full max-w-md rounded-3xl border border-white/50 bg-white/40 p-6 shadow-lg2 backdrop-blur-md sm:p-8 dark:border-white/10 dark:bg-white/[0.05]">
             <motion.h1
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -250,16 +260,6 @@ export function LoginPage() {
                 placeholder="Masukkan password Anda"
               />
 
-              <div className="flex items-center justify-between text-sm">
-                <button
-                  type="button"
-                  onClick={() => setShowReset(true)}
-                  className="font-medium text-green-600 transition-colors hover:text-green-500 dark:text-green-400"
-                >
-                  Lupa password?
-                </button>
-              </div>
-
               <Button type="submit" size="lg" loading={loading} className="w-full">
                 <LogIn className="h-5 w-5" /> Masuk
               </Button>
@@ -267,48 +267,6 @@ export function LoginPage() {
           </div>
         </div>
       </div>
-
-      {/* Reset modal */}
-      <AnimatePresence>
-        {showReset && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <div className="absolute inset-0 bg-slate-950/50 backdrop-blur-sm" onClick={() => setShowReset(false)} />
-            <motion.div
-              initial={{ scale: 0.92, y: 20, opacity: 0 }}
-              animate={{ scale: 1, y: 0, opacity: 1 }}
-              exit={{ scale: 0.94, y: 10, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 28 }}
-              className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-3xl bg-white p-8 shadow-2xl dark:bg-[#0b2413]"
-            >
-              <h3 className="font-display text-xl font-bold">Atur ulang password</h3>
-              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                Masukkan email terdaftar untuk menerima tautan reset.
-              </p>
-              <div className="mt-5">
-                <Input label="Email" icon={Mail} type="email" floating={false} placeholder="nama@email.com" />
-              </div>
-              <div className="mt-6 flex gap-3">
-                <Button variant="secondary" className="flex-1" onClick={() => setShowReset(false)}>
-                  Batal
-                </Button>
-                <Button
-                  className="flex-1"
-                  onClick={() => {
-                    setShowReset(false);
-                  }}
-                >
-                  Kirim Tautan
-                </Button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

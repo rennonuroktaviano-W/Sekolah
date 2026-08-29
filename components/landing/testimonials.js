@@ -1,7 +1,7 @@
 ﻿"use client";
 
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import { Quote } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
 import { Reveal } from "@/components/ui/reveal";
@@ -30,12 +30,19 @@ const testimonials = [
 export function Testimonials() {
   const [idx, setIdx] = useState(0);
   const [paused, setPaused] = useState(false);
+  const reduce = useReducedMotion();
+  const sectionRef = useRef(null);
+  const inView = useInView(sectionRef, { margin: "-15% 0px" });
+
+  // Rotasi otomatis hanya saat terlihat & gerakan diizinkan — tidak berjalan
+  // diam-diam di luar viewport atau untuk pengguna prefers-reduced-motion.
+  const autoPlay = inView && !paused && !reduce;
 
   useEffect(() => {
-    if (paused) return;
+    if (!autoPlay) return;
     const t = setInterval(() => setIdx((i) => (i + 1) % testimonials.length), 4000);
     return () => clearInterval(t);
-  }, [paused]);
+  }, [autoPlay]);
 
   const t = testimonials[idx];
 
@@ -50,6 +57,7 @@ export function Testimonials() {
           </Reveal>
         </div>
 
+        <div ref={sectionRef}>
         <Reveal delay={0.1}>
           <div
             className="mt-12"
@@ -104,6 +112,7 @@ export function Testimonials() {
             </div>
           </div>
         </Reveal>
+        </div>
       </div>
     </section>
   );

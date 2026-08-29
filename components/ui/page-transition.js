@@ -33,18 +33,20 @@ const TransitionContext = createContext(null);
 
 const INTERACTIVE = new Set(["idle", "ready"]);
 
-const EXIT_MS = 560; // lama keluar halaman lama (curtain in + geser kiri)
-const CURTAIN_MS = 480; // lama curtain menutup/membuka
-const ENTER_SETTLE_MS = 850; // fallback: halaman baru "menetap" -> ready
+const EXIT_MS = 420; // lama keluar halaman lama (curtain in + geser kiri)
+const CURTAIN_MS = 360; // lama curtain menutup/membuka
+const ENTER_SETTLE_MS = 600; // fallback: halaman baru "menetap" -> ready
 const NAVIGATE_MAX_MS = 12000; // batas aman tunggu route tujuan
-const LOADING_MAX_MS = 6000; // batas aman initial loading
+const LOADING_MAX_MS = 5000; // batas aman initial loading
 const REDUCED_SETTLE_MS = 80; // settling instan saat reduced-motion
 
 const easePremium = [0.22, 1, 0.36, 1];
-const exitTarget = { x: "-5%", opacity: 0, scale: 0.985 };
-const enterTarget = { x: 0, opacity: 1, scale: 1 };
-const FROM_RIGHT = { x: "3.5%", opacity: 0, scale: 0.985 };
-const FROM_LEFT = { x: "-3.5%", opacity: 0, scale: 0.985 };
+// Hanya translate/opacity — tanpa scale agar halaman besar tidak
+// di-raster ulang tiap frame selama transisi.
+const exitTarget = { x: -28, opacity: 0 };
+const enterTarget = { x: 0, opacity: 1 };
+const FROM_RIGHT = { x: 28, opacity: 0 };
+const FROM_LEFT = { x: -28, opacity: 0 };
 
 export function PageTransitionProvider({ children }) {
   const router = useRouter();
@@ -167,7 +169,7 @@ export function PageTransitionProvider({ children }) {
         prevPathnameRef.current = pathnameRef.current;
         setFirstRender(false);
         transitionTo("entering");
-        window.scrollTo(0, 0);
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
         enterSettle();
       } else if (ph === "entering" || ph === "leaving" || ph === "loading") {
         // Proses lain sedang berjalan / remount dev — jangan tabrakan.
@@ -177,7 +179,7 @@ export function PageTransitionProvider({ children }) {
           prevPathnameRef.current = pathnameRef.current;
           setFirstRender(false);
           transitionTo("entering");
-          window.scrollTo(0, 0);
+          window.scrollTo({ top: 0, left: 0, behavior: "instant" });
           enterSettle();
         } else {
           setFirstRender(false); // mount pertama (hard load)

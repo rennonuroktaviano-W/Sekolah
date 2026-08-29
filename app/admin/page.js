@@ -2,14 +2,6 @@
 
 import { motion } from "framer-motion";
 import {
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-} from "recharts";
-import {
   Users,
   GraduationCap,
   UserCheck,
@@ -31,6 +23,39 @@ const toneMap = {
 };
 const sparkColor = { indigo: "#22c55e", teal: "#14b8a6", amber: "#f59e0b", violet: "#10b981" };
 
+// Sparkline SVG ringan (tanpa recharts) untuk kartu KPI.
+function Sparkline({ values, color, width = 80, height = 32 }) {
+  const len = Math.max(values.length, 2);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = max - min || 1;
+  const points = values
+    .map((v, i) => {
+      const x = (i / (len - 1)) * width;
+      const y = height - 3 - ((v - min) / range) * (height - 6);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    })
+    .join(" ");
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      className="shrink-0 overflow-visible"
+      aria-hidden="true"
+    >
+      <polyline
+        points={points}
+        fill="none"
+        stroke={color}
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export default function AdminOverview() {
   return (
     <div className="space-y-6">
@@ -44,7 +69,6 @@ export default function AdminOverview() {
         {adminKpi.map((k, i) => {
           const Icon = iconMap[k.icon];
           const t = toneMap[k.tone];
-          const data = k.spark.map((v, j) => ({ i: j, v }));
           return (
             <motion.div
               key={k.id}
@@ -57,11 +81,7 @@ export default function AdminOverview() {
                   <div className={`flex h-11 w-11 items-center justify-center rounded-2xl ${t}`}>
                     <Icon className="h-6 w-6" />
                   </div>
-                  <ResponsiveContainer width={80} height={32}>
-                    <LineChart data={data}>
-                      <Line type="monotone" dataKey="v" stroke={sparkColor[k.tone]} strokeWidth={2} dot={false} />
-                    </LineChart>
-                  </ResponsiveContainer>
+                  <Sparkline values={k.spark} color={sparkColor[k.tone]} />
                 </div>
                 <p className="mt-3 font-display text-3xl font-bold">{typeof k.value === "number" ? <CountUp to={k.value} /> : k.value}</p>
                 <p className="text-sm text-slate-500 dark:text-slate-400">{k.label}</p>

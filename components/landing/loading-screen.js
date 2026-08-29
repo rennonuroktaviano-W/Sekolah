@@ -50,19 +50,21 @@ export function LoadingScreen() {
   };
 
   // Nyalakan interval progres + timer selesai (idempotent / aman dipanggil ulang).
+  // Loading tidak ditahan lama secara sengaja: selesai sesegera mungkin setelah
+  // aset utama siap, tanpa menunggu animasi.
   const startTimers = () => {
     clearTimers();
-    const minTime = reducedRef.current ? 500 : 1500;
+    const minTime = reducedRef.current ? 120 : 700;
     const startedAt = Date.now();
 
     timersRef.current.tick = setInterval(() => {
-      progressRef.current = Math.min(progressRef.current + Math.random() * 9 + 3, 96);
+      progressRef.current = Math.min(progressRef.current + Math.random() * 12 + 6, 96);
       setProgress(progressRef.current);
-    }, 220);
+    }, 160);
 
     // Selesaikan saat aset penting siap (minimal setelah minTime), atau batas aman.
     timersRef.current.minTimer = setTimeout(completeLoading, minTime);
-    timersRef.current.safety = setTimeout(completeLoading, 3500);
+    timersRef.current.safety = setTimeout(completeLoading, 2200);
 
     const onLoad = () => {
       if (Date.now() - startedAt >= minTime) completeLoading();
@@ -82,8 +84,11 @@ export function LoadingScreen() {
     } catch {
       skipped = false;
     }
-    if (skipped) {
+    if (skipped || reducedRef.current) {
       setVisible(false);
+      setDone(true);
+      finishLoading();
+      completedRef.current = true;
       return undefined;
     }
 
@@ -106,7 +111,7 @@ export function LoadingScreen() {
     const t = setTimeout(() => {
       setVisible(false);
       document.body.style.overflow = prevOverflowRef.current || "";
-    }, reducedRef.current ? 80 : 420);
+    }, reducedRef.current ? 80 : 300);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [done]);
@@ -118,80 +123,46 @@ export function LoadingScreen() {
           key="loading-screen"
           initial={{ x: "0%" }}
           exit={{ x: "-100%", opacity: 0.4 }}
-          transition={{ duration: reducedRef.current ? 0.1 : 0.5, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: reducedRef.current ? 0.1 : 0.4, ease: [0.22, 1, 0.36, 1] }}
           role="status"
           aria-label={`Memuat ${SCHOOL.name}`}
           className="pointer-events-auto fixed inset-0 z-[400] flex items-center justify-center overflow-hidden bg-[#04120c]"
         >
-          <div className="pointer-events-none absolute inset-0">
-            <div className="absolute inset-0 opacity-[0.05] [background-image:linear-gradient(rgba(255,255,255,0.5)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.5)_1px,transparent_1px)] [background-size:44px_44px]" />
-            <motion.div
-              animate={reducedRef.current ? undefined : { y: [0, -36, 0], x: [0, 24, 0] }}
-              transition={{ repeat: Infinity, duration: 9, ease: "easeInOut" }}
-              className="absolute -right-24 top-16 h-96 w-96 rounded-full bg-green-500/15 blur-3xl"
-            />
-            <motion.div
-              animate={reducedRef.current ? undefined : { y: [0, 30, 0], x: [0, -20, 0] }}
-              transition={{ repeat: Infinity, duration: 11, ease: "easeInOut" }}
-              className="absolute -left-28 bottom-10 h-80 w-80 rounded-full bg-teal-400/15 blur-3xl"
-            />
-            {[0, 1, 2, 3, 4].map((i) => (
-              <motion.span
-                key={i}
-                animate={
-                  reducedRef.current
-                    ? undefined
-                    : { opacity: [0, 0.8, 0], scale: [0.6, 1.4, 0.6] }
-                }
-                transition={{
-                  repeat: Infinity,
-                  duration: 4 + i * 0.7,
-                  delay: i * 0.5,
-                  ease: "easeInOut",
-                }}
-                className="absolute h-1.5 w-1.5 rounded-full bg-green-300/60"
-                style={{
-                  left: `${18 + i * 17}%`,
-                  top: `${20 + ((i * 13) % 45)}%`,
-                }}
-              />
-            ))}
-          </div>
+          {/* Latar statis: tanpa blur besar, tanpa animasi tak berujung. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 20% 20%, rgba(52,211,153,0.12), transparent 42%)," +
+                "radial-gradient(circle at 82% 72%, rgba(45,212,191,0.12), transparent 45%)",
+            }}
+          />
 
           <motion.div
             initial={{ opacity: 0, scale: 0.92, y: 14 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="relative flex flex-col items-center px-6 text-center"
           >
             <div className="relative">
-              <motion.div
-                animate={
-                  reducedRef.current
-                    ? undefined
-                    : { boxShadow: [
-                        "0 0 0 0 rgba(34,197,94,0)",
-                        "0 0 60px 6px rgba(34,197,94,0.35)",
-                        "0 0 0 0 rgba(34,197,94,0)",
-                      ] }
-                }
-                transition={{ repeat: Infinity, duration: 2.4, ease: "easeInOut" }}
-                className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-[2rem] bg-white p-3 shadow-2xl sm:h-32 sm:w-32"
-              >
+              <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-[2rem] bg-white p-3 shadow-2xl sm:h-32 sm:w-32">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={SCHOOL.logo}
                   alt={SCHOOL.logoAlt}
+                  width={128}
+                  height={128}
                   className="h-full w-full object-contain"
                   draggable={false}
                 />
-              </motion.div>
+              </div>
             </div>
 
             <motion.h1
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.15, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="mt-7 font-display text-2xl font-bold tracking-tight text-white sm:text-3xl"
             >
               {SCHOOL.name}
@@ -199,7 +170,7 @@ export function LoadingScreen() {
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.45, duration: 0.6 }}
+              transition={{ delay: 0.25, duration: 0.5 }}
               className="mt-2 text-sm text-emerald-200/80"
             >
               {SCHOOL.slogan}
@@ -209,7 +180,7 @@ export function LoadingScreen() {
               <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
                 <motion.div
                   animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.25, ease: "easeOut" }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
                   className="h-full rounded-full bg-gradient-to-r from-green-400 via-emerald-400 to-teal-300"
                 />
               </div>

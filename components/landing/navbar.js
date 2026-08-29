@@ -27,18 +27,14 @@ export function Navbar() {
     <motion.header
       initial={false}
       className={cn(
-        "fixed inset-x-0 top-0 z-50 border-b backdrop-blur-md transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
+        // Tinggi konsisten (tidak dianimasikan) agar tidak memicu layout berulang.
+        "fixed inset-x-0 top-0 z-50 h-[72px] border-b backdrop-blur-md transition-[background-color,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]",
         scrolled
           ? "border-white/40 bg-white/70 shadow-[0_8px_30px_-12px_rgba(15,23,42,0.18)] dark:border-white/10 dark:bg-[#081510]/85 dark:shadow-black/40"
           : "border-transparent bg-transparent shadow-none"
       )}
     >
-      <motion.nav
-        initial={false}
-        animate={{ height: scrolled ? 60 : 72 }}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
-      >
+      <nav className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <TransitionLink href="/" className="flex min-w-0 items-center gap-2.5">
           <motion.div
             whileHover={{ rotate: -5, scale: 1.05 }}
@@ -48,6 +44,8 @@ export function Navbar() {
             <img
               src={SCHOOL.logo}
               alt={SCHOOL.logoAlt}
+              width={40}
+              height={40}
               className="h-full w-full object-contain"
               draggable={false}
             />
@@ -77,7 +75,7 @@ export function Navbar() {
             </Button>
           </TransitionLink>
         </div>
-      </motion.nav>
+      </nav>
     </motion.header>
   );
 }

@@ -44,69 +44,20 @@ export function DashboardShell({ user, role, accent = "indigo", accentName, navI
   const [mobileOpen, setMobileOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const styles = ACCENT_STYLES[accent];
-
-  const NavContent = ({ mobile }) => (
-    <div className="flex h-full flex-col">
-      <div className={cn("flex items-center gap-2.5 px-5", mobile ? "py-4" : "py-6")}>
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-1 ring-1 ring-slate-200/70 dark:ring-white/15">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={SCHOOL.logo} alt={SCHOOL.logoAlt} className="h-full w-full object-contain" draggable={false} />
-        </div>
-        <div>
-          <p className="font-display text-sm font-bold leading-tight">{accentName}</p>
-          <p className={cn("text-[11px]", styles.text)}>{role}</p>
-        </div>
-      </div>
-
-      <div className="no-scrollbar flex-1 space-y-1 overflow-y-auto px-3">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
-          return (
-            <TransitionLink
-              key={item.href}
-              href={item.href}
-              onClick={() => mobile && setMobileOpen(false)}
-              className={cn(
-                "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
-                isActive
-                  ? styles.active
-                  : "text-slate-500 dark:text-slate-400 hover:bg-slate-900/5 dark:hover:bg-white/5 hover:text-slate-800 dark:hover:text-slate-200"
-              )}
-            >
-              {isActive && (
-                <motion.span
-                  layoutId={`nav-active-${accent}-${mobile ? "m" : "d"}`}
-                  className="absolute left-0 h-6 w-1 rounded-r-full bg-current opacity-60"
-                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                />
-              )}
-              <item.icon className="h-[18px] w-[18px] transition-transform group-hover:scale-110" />
-              {item.label}
-            </TransitionLink>
-          );
-        })}
-      </div>
-
-      <div className="border-t border-slate-100 p-3 dark:border-white/10">
-        <div className="flex items-center gap-3 rounded-2xl bg-slate-100/70 p-3 dark:bg-white/[0.04]">
-          <Avatar name={user?.name} />
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold">{user?.name}</p>
-            <p className="truncate text-xs text-slate-400">{user?.subtitle}</p>
-          </div>
-          <button className="rounded p-1 text-slate-400 transition-colors hover:text-rose-500 focus-ring">
-            <LogOut className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+  const closeMobile = () => setMobileOpen(false);
 
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-slate-200/70 bg-white/60 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.02] lg:flex">
-        <NavContent />
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-slate-200/70 bg-white/60 backdrop-blur-md dark:border-white/10 dark:bg-white/[0.02] lg:flex">
+        <NavContent
+          user={user}
+          role={role}
+          accent={accent}
+          accentName={accentName}
+          navItems={navItems}
+          pathname={pathname}
+        />
       </aside>
 
       {/* Mobile drawer */}
@@ -118,7 +69,7 @@ export function DashboardShell({ user, role, accent = "indigo", accentName, navI
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setMobileOpen(false)}
+              onClick={closeMobile}
             />
             <motion.aside
               className="fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-2xl dark:bg-[#052e16] lg:hidden"
@@ -128,12 +79,21 @@ export function DashboardShell({ user, role, accent = "indigo", accentName, navI
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
               <button
-                onClick={() => setMobileOpen(false)}
+                onClick={closeMobile}
                 className="absolute right-3 top-4 rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 focus-ring"
               >
                 <X className="h-5 w-5" />
               </button>
-              <NavContent mobile />
+              <NavContent
+                user={user}
+                role={role}
+                accent={accent}
+                accentName={accentName}
+                navItems={navItems}
+                pathname={pathname}
+                mobile
+                onNavigate={closeMobile}
+              />
             </motion.aside>
           </>
         )}
@@ -141,7 +101,7 @@ export function DashboardShell({ user, role, accent = "indigo", accentName, navI
 
       {/* Main area */}
       <div className="lg:pl-64">
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-slate-200/70 bg-white/70 px-4 backdrop-blur-xl dark:border-white/10 dark:bg-[#081510]/70 lg:px-8">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-slate-200/70 bg-white/70 px-4 backdrop-blur-md dark:border-white/10 dark:bg-[#081510]/70 lg:px-8">
           <button
             onClick={() => setMobileOpen(true)}
             className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/10 lg:hidden focus-ring"
@@ -165,13 +125,7 @@ export function DashboardShell({ user, role, accent = "indigo", accentName, navI
                 className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition-colors hover:bg-slate-100 dark:border-white/10 dark:hover:bg-white/10 focus-ring"
               >
                 <Bell className="h-5 w-5" />
-                <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-rose-500">
-                  <motion.span
-                    animate={{ scale: [1, 1.6, 1] }}
-                    transition={{ repeat: Infinity, duration: 1.5 }}
-                    className="absolute inset-0 rounded-full bg-rose-500/60"
-                  />
-                </span>
+                <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white/50 dark:ring-black/30" />
               </button>
               <AnimatePresence>
                 {notifOpen && (
@@ -224,13 +178,14 @@ export function DashboardShell({ user, role, accent = "indigo", accentName, navI
       </div>
 
       {/* Mobile bottom nav */}
-      <nav className="fixed bottom-0 left-0 right-0 z-30 flex items-center justify-around border-t border-slate-200 bg-white/90 backdrop-blur-xl dark:border-white/10 dark:bg-[#052e16]/90 lg:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 z-30 flex items-center justify-around border-t border-slate-200 bg-white/90 backdrop-blur-md dark:border-white/10 dark:bg-[#052e16]/90 lg:hidden">
         {navItems.slice(0, 5).map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
           return (
             <TransitionLink
               key={item.href}
               href={item.href}
+              onClick={closeMobile}
               className={cn(
                 "flex flex-col items-center gap-1 py-2.5 text-[10px] transition-colors",
                 isActive ? styles.text : "text-slate-400"
@@ -243,5 +198,65 @@ export function DashboardShell({ user, role, accent = "indigo", accentName, navI
         })}
       </nav>
     </>
+  );
+}
+
+function NavContent({ user, role, accent, accentName, navItems, pathname, mobile, onNavigate }) {
+  const styles = ACCENT_STYLES[accent];
+  return (
+    <div className="flex h-full flex-col">
+      <div className={cn("flex items-center gap-2.5 px-5", mobile ? "py-4" : "py-6")}>
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white p-1 ring-1 ring-slate-200/70 dark:ring-white/15">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={SCHOOL.logo} alt={SCHOOL.logoAlt} width={36} height={36} className="h-full w-full object-contain" draggable={false} />
+        </div>
+        <div>
+          <p className="font-display text-sm font-bold leading-tight">{accentName}</p>
+          <p className={cn("text-[11px]", styles.text)}>{role}</p>
+        </div>
+      </div>
+
+      <div className="no-scrollbar flex-1 space-y-1 overflow-y-auto px-3">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+          return (
+            <TransitionLink
+              key={item.href}
+              href={item.href}
+              onClick={onNavigate}
+              className={cn(
+                "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+                isActive
+                  ? styles.active
+                  : "text-slate-500 dark:text-slate-400 hover:bg-slate-900/5 dark:hover:bg-white/5 hover:text-slate-800 dark:hover:text-slate-200"
+              )}
+            >
+              {isActive && (
+                <motion.span
+                  layoutId={`nav-active-${accent}-${mobile ? "m" : "d"}`}
+                  className="absolute left-0 h-6 w-1 rounded-r-full bg-current opacity-60"
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
+              <item.icon className="h-[18px] w-[18px] transition-transform group-hover:scale-110" />
+              {item.label}
+            </TransitionLink>
+          );
+        })}
+      </div>
+
+      <div className="border-t border-slate-100 p-3 dark:border-white/10">
+        <div className="flex items-center gap-3 rounded-2xl bg-slate-100/70 p-3 dark:bg-white/[0.04]">
+          <Avatar name={user?.name} />
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-semibold">{user?.name}</p>
+            <p className="truncate text-xs text-slate-400">{user?.subtitle}</p>
+          </div>
+          <button className="rounded p-1 text-slate-400 transition-colors hover:text-rose-500 focus-ring">
+            <LogOut className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

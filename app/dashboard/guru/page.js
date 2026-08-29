@@ -1,13 +1,8 @@
 ﻿"use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import {
-  ResponsiveContainer,
-  Tooltip,
-  RadialBarChart,
-  RadialBar,
-} from "recharts";
 import {
   Users,
   TrendingUp,
@@ -19,6 +14,7 @@ import {
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { CountUp } from "@/components/ui/count-up";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   users,
   guruStatistik,
@@ -26,6 +22,12 @@ import {
   distribusiNilai,
   siswaMenurun,
 } from "@/data";
+
+// recharts dimuat lazy agar tidak membebani first-load halaman.
+const RadialDistChart = dynamic(() => import("@/components/charts/radial-dist"), {
+  ssr: false,
+  loading: () => <Skeleton className="h-[200px] w-full" />,
+});
 
 const iconMap = {
   users: Users,
@@ -42,11 +44,6 @@ const toneMap = {
 };
 
 export default function GuruOverview() {
-  const radialData = distribusiNilai.map((d, i) => ({
-    ...d,
-    fill: ["#2dd4bf", "#14b8a6", "#fbbf24", "#f87171"][i],
-  }));
-
   return (
     <div className="space-y-6">
       <div>
@@ -147,18 +144,7 @@ export default function GuruOverview() {
             <Badge tone="teal">Kelas X RPL</Badge>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={200}>
-              <RadialBarChart
-                innerRadius="30%"
-                outerRadius="100%"
-                data={radialData}
-                startAngle={90}
-                endAngle={-270}
-              >
-                <RadialBar background dataKey="jumlah" />
-                <Tooltip />
-              </RadialBarChart>
-            </ResponsiveContainer>
+            <RadialDistChart data={distribusiNilai} />
             <div className="mt-2 space-y-1.5">
               {distribusiNilai.map((d) => (
                 <div key={d.rentang} className="flex items-center justify-between text-sm">
@@ -174,11 +160,7 @@ export default function GuruOverview() {
       {/* Warning students */}
       <Card className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 opacity-40">
-          <motion.div
-            animate={{ opacity: [0.2, 0.5, 0.2] }}
-            transition={{ repeat: Infinity, duration: 3 }}
-            className="absolute inset-0 bg-gradient-to-r from-amber-400/10 to-rose-400/10"
-          />
+          <div className="absolute inset-0 bg-gradient-to-r from-amber-400/10 to-rose-400/10" />
         </div>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

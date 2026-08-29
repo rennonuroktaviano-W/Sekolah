@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Search, Filter } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -18,26 +18,65 @@ const typeTone = {
   konten: "navy",
 };
 
+const MAX_PAGES = 3; // batas aman agar DOM tidak tumbuh tak terkendali.
+
 export default function LogAktivitasPage() {
   const [logs, setLogs] = useState(logAktivitas);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  // simulate infinite scroll
+  // Refs sehingga satu listener stabil (tidak dipasang-bongkar setiap scroll).
+  const hasMoreRef = useRef(true);
+  const loadingRef = useRef(false);
+  const pageRef = useRef(1);
+  const rafRef = useRef(0);
+
+  const loadMore = () => {
+    if (loadingRef.current || !hasMoreRef.current) return;
+    if (pageRef.current >= MAX_PAGES) {
+      hasMoreRef.current = false;
+      setHasMore(false);
+      return;
+    }
+    loadingRef.current = true;
+    setLoading(true);
+    setTimeout(() => {
+      pageRef.current += 1;
+      setLogs((prev) => {
+        const next = logAktivitas.map((l) => ({ ...l, id: `${l.id}-${pageRef.current}` }));
+        return [...prev, ...next];
+      });
+      loadingRef.current = false;
+      setLoading(false);
+      if (pageRef.current >= MAX_PAGES) {
+        hasMoreRef.current = false;
+        setHasMore(false);
+      }
+    }, 600);
+  };
+
+  // Satu listener scroll (rAF-throttled) dipasang sekali dengan pembersihan.
   useEffect(() => {
     const onScroll = () => {
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200 && hasMore && !loading) {
-        setLoading(true);
-        setTimeout(() => {
-          setLogs((prev) => [...prev, ...logAktivitas]);
-          setLoading(false);
-          setHasMore(false);
-        }, 800);
+      if (
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 250 &&
+        !loadingRef.current &&
+        hasMoreRef.current
+      ) {
+        if (rafRef.current) return;
+        rafRef.current = requestAnimationFrame(() => {
+          rafRef.current = 0;
+          loadMore();
+        });
       }
     };
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [hasMore, loading]);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -84,7 +123,7 @@ export default function LogAktivitasPage() {
             <tbody>
               {logs.map((l, i) => (
                 <motion.tr
-                  key={`${l.id}-${i}`}
+                  key={l.id}
                   initial={{ opacity: 0, y: -6 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="border-b border-slate-50 transition-colors hover:bg-slate-50/50 dark:border-white/5 dark:hover:bg-white/[0.02]"
