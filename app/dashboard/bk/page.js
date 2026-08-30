@@ -18,10 +18,12 @@ import { bkRingkasan, statistikPelanggaran, kasusTren, kanbanKasus } from "@/dat
 // recharts dimuat lazy agar tidak membebani first-load halaman.
 const PieTypeChart = dynamic(() => import("@/components/charts/pie-type"), {
   ssr: false,
+  preload: true,
   loading: () => <Skeleton className="h-[240px] w-full" />,
 });
 const LineTrendChart = dynamic(() => import("@/components/charts/line-trend"), {
   ssr: false,
+  preload: true,
   loading: () => <Skeleton className="h-[240px] w-full" />,
 });
 

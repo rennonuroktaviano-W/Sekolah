@@ -1,6 +1,7 @@
 "use client";
 
 import { DashboardShell } from "@/components/dashboard-shell";
+import { DashboardContentTransition } from "@/components/ui/dashboard-content-transition";
 import { users } from "@/data";
 import {
   LayoutDashboard,
@@ -27,7 +28,7 @@ export default function BkLayout({ children }) {
       accentName="Dashboard BK"
       navItems={bkNav}
     >
-      {children}
+      <DashboardContentTransition>{children}</DashboardContentTransition>
     </DashboardShell>
   );
 }

@@ -33,11 +33,25 @@ const TransitionContext = createContext(null);
 
 const INTERACTIVE = new Set(["idle", "ready"]);
 
-const EXIT_MS = 420; // lama keluar halaman lama (curtain in + geser kiri)
-const CURTAIN_MS = 360; // lama curtain menutup/membuka
-const ENTER_SETTLE_MS = 600; // fallback: halaman baru "menetap" -> ready
-const NAVIGATE_MAX_MS = 12000; // batas aman tunggu route tujuan
-const LOADING_MAX_MS = 5000; // batas aman initial loading
+// Ruang lingkup besar aplikasi. Perpindahan di dalam area dashboard yang sama
+// (contoh: /dashboard/ortu/nilai -> /dashboard/ortu/jadwal) TIDAK boleh
+// memicu transisi global — sidebar/header tetap diam, hanya konten kanan
+// yang diganti (dianimasikan oleh transisi internal dashboard).
+function getScope(pathname) {
+  if (pathname === "/" || pathname === "/login") return "landing";
+  if (pathname === "/dashboard/ortu" || pathname.startsWith("/dashboard/ortu/")) return "dash-ortu";
+  if (pathname === "/dashboard/guru" || pathname.startsWith("/dashboard/guru/")) return "dash-guru";
+  if (pathname === "/dashboard/bk" || pathname.startsWith("/dashboard/bk/")) return "dash-bk";
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) return "dash-admin";
+  return "other";
+}
+const DASH_SCOPES = new Set(["dash-ortu", "dash-guru", "dash-bk", "dash-admin"]);
+
+const EXIT_MS = 240; // lama keluar halaman lama (curtain in + geser kiri)
+const CURTAIN_MS = 220; // lama curtain menutup/membuka
+const ENTER_SETTLE_MS = 320; // fallback: halaman baru "menetap" -> ready
+const NAVIGATE_MAX_MS = 8000; // batas aman tunggu route tujuan
+const LOADING_MAX_MS = 2500; // batas aman initial loading
 const REDUCED_SETTLE_MS = 80; // settling instan saat reduced-motion
 
 const easePremium = [0.22, 1, 0.36, 1];
@@ -69,6 +83,21 @@ export function PageTransitionProvider({ children }) {
 
   // Jaga pathnameRef selalu sinkron.
   if (pathnameRef.current !== pathname) pathnameRef.current = pathname;
+
+  // Deteksi navigasi internal dashboard: pathname berubah tetapi scope
+  // dashboard tetap sama -> bukan perpindahan layout besar. Wrapper konten
+  // global tidak boleh di-remount/dianimasikan; hanya area konten kanan yang
+  // dianimasikan oleh DashboardContentTransition.
+  const prevNavPathnameRef = useRef(pathname);
+  const internalScope = getScope(pathname);
+  const isInternalNav =
+    prevNavPathnameRef.current !== pathname &&
+    DASH_SCOPES.has(internalScope) &&
+    internalScope === getScope(prevNavPathnameRef.current);
+  prevNavPathnameRef.current = pathname;
+  // Semua path di dalam dashboard selalu memakai wrapper "dashboard-stable",
+  // sehingga pergantian section tidak pernah me-remount layout dashboard.
+  const scopeIsDash = DASH_SCOPES.has(getScope(pathname));
 
   const transitionTo = useCallback((next) => {
     phaseRef.current = next;
@@ -190,6 +219,22 @@ export function PageTransitionProvider({ children }) {
     [enterSettle, transitionTo]
   );
 
+  // Mount wrapper internal dashboard (key stabil): tidak boleh mengubah fase,
+  // tidak ada scroll, tidak mengunci interaksi — konten dianimasikan oleh
+  // DashboardContentTransition di dalam layout dashboard.
+  const handleStableMount = useCallback((node) => {
+    if (!node) return;
+    // Safety net: dashboard sekarang punya scroll container sendiri, jadi body
+    // tidak boleh dibiarkan terkunci overflow dari transisi global mana pun.
+    if (overflowPrevRef.current) {
+      document.body.style.overflow = overflowPrevRef.current;
+      overflowPrevRef.current = "";
+    }
+    if (phaseRef.current === "ready" || phaseRef.current === "idle") {
+      setFirstRender(false);
+    }
+  }, []);
+
   // router.push tepat SATU kali; jika macet lama, UI dipulihkan.
   const performPush = useCallback(() => {
     const href = pendingHrefRef.current;
@@ -219,6 +264,21 @@ export function PageTransitionProvider({ children }) {
       if (targetPath === pathnameRef.current) return; // halaman yang sama
       if (!INTERACTIVE.has(phaseRef.current)) return; // kunci global
 
+      const toScope = getScope(targetPath);
+      const fromScope = getScope(pathnameRef.current);
+      if (DASH_SCOPES.has(fromScope) && fromScope === toScope) {
+        // Navigasi internal dashboard (klik menu sidebar / tautan antar-section).
+        // Tanpa curtain, tanpa kunci interaksi, tanpa global transition:
+        // router langsung pindah secara SPA, konten kanan dianimasikan oleh
+        // DashboardContentTransition. Layout dashboard tidak di-remount.
+        try {
+          router.push(href);
+        } catch (err) {
+          console.error("Navigasi internal gagal:", err);
+        }
+        return;
+      }
+
       dirRef.current = 1;
       pendingHrefRef.current = href;
       overflowPrevRef.current = document.body.style.overflow;
@@ -241,7 +301,7 @@ export function PageTransitionProvider({ children }) {
         }
       });
     },
-    [armFallback, performPush, transitionTo]
+    [armFallback, performPush, transitionTo, router]
   );
 
   // Initial loading screen (dipendaki oleh LandingPage).
@@ -275,10 +335,10 @@ export function PageTransitionProvider({ children }) {
   return (
     <TransitionContext.Provider value={api}>
       <div className="relative min-h-screen" aria-busy={busy}>
-        {reduced ? (
+        {reduced || scopeIsDash ? (
           <div
-            key={pathname}
-            ref={handlePageMount}
+            key={reduced && !scopeIsDash ? pathname : "dashboard-stable"}
+            ref={scopeIsDash && isInternalNav ? handleStableMount : handlePageMount}
             className="min-h-screen"
             style={{ pointerEvents: busy ? "none" : "auto" }}
           >
@@ -295,7 +355,7 @@ export function PageTransitionProvider({ children }) {
             transition={
               phase === "leaving"
                 ? { duration: EXIT_MS / 1000, ease: easePremium }
-                : { duration: 0.55, delay: 0.24, ease: easePremium }
+                : { duration: 0.42, delay: 0.12, ease: easePremium }
             }
             onAnimationComplete={() => {
               if (phaseRef.current === "entering" && !reducedRef.current) {

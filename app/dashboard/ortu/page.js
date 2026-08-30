@@ -35,7 +35,8 @@ import {
 // recharts dimuat lazy agar tidak membebani first-load halaman.
 const TrendAreaChart = dynamic(() => import("@/components/charts/trend-area"), {
   ssr: false,
-  loading: () => <Skeleton className="h-[240px] w-full" />,
+  preload: true,
+  loading: () => <Skeleton className="h-[200px] w-full" />,
 });
 
 const statusColors = {
@@ -81,7 +82,7 @@ export default function OrtuOverview() {
             <Avatar name={child.name} size="lg" />
             <div>
               <h1 className="font-display text-2xl font-bold">
-                {getGreeting()}, {users.ortu.name.split(" ")[1]} <span>👋</span>
+                {getGreeting()} <span>👋</span>
               </h1>
               <div className="mt-1.5 flex flex-wrap items-center gap-2">
                 <p className="text-sm text-slate-500 dark:text-slate-400">{child.name}</p>

@@ -54,7 +54,7 @@ export function LoadingScreen() {
   // aset utama siap, tanpa menunggu animasi.
   const startTimers = () => {
     clearTimers();
-    const minTime = reducedRef.current ? 120 : 700;
+    const minTime = reducedRef.current ? 120 : 450;
     const startedAt = Date.now();
 
     timersRef.current.tick = setInterval(() => {

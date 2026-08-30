@@ -1,14 +1,13 @@
 ﻿"use client";
 
 import { useState } from "react";
-import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Bell, Menu, X, LogOut, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { TransitionLink } from "@/components/ui/page-transition";
 import { notifikasi, SCHOOL } from "@/data";
 
 const ACCENT_STYLES = {
@@ -41,22 +40,36 @@ const ACCENT_STYLES = {
 
 export function DashboardShell({ user, role, accent = "indigo", accentName, navItems, children }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const styles = ACCENT_STYLES[accent];
   const closeMobile = () => setMobileOpen(false);
+
+  // Logout: navigasi langsung ke beranda TANPA lewat animasi keluar global
+  // (curtain + kunci body overflow) yang rapuh untuk arah dashboard -> landing.
+  const handleLogout = () => {
+    setMobileOpen(false);
+    setNotifOpen(false);
+    try {
+      document.body.style.overflow = "";
+    } catch {
+      /* abaikan */
+    }
+    router.push("/");
+  };
 
   return (
     <>
       {/* Desktop sidebar */}
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-slate-200/70 bg-white/60 backdrop-blur-md dark:border-white/10 dark:bg-white/[0.02] lg:flex">
         <NavContent
-          user={user}
           role={role}
           accent={accent}
           accentName={accentName}
           navItems={navItems}
           pathname={pathname}
+          onLogout={handleLogout}
         />
       </aside>
 
@@ -85,7 +98,6 @@ export function DashboardShell({ user, role, accent = "indigo", accentName, navI
                 <X className="h-5 w-5" />
               </button>
               <NavContent
-                user={user}
                 role={role}
                 accent={accent}
                 accentName={accentName}
@@ -93,6 +105,7 @@ export function DashboardShell({ user, role, accent = "indigo", accentName, navI
                 pathname={pathname}
                 mobile
                 onNavigate={closeMobile}
+                onLogout={handleLogout}
               />
             </motion.aside>
           </>
@@ -100,8 +113,8 @@ export function DashboardShell({ user, role, accent = "indigo", accentName, navI
       </AnimatePresence>
 
       {/* Main area */}
-      <div className="lg:pl-64">
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-slate-200/70 bg-white/70 px-4 backdrop-blur-md dark:border-white/10 dark:bg-[#081510]/70 lg:px-8">
+      <div className="flex h-dvh flex-col overflow-hidden lg:pl-64">
+        <header className="z-30 flex h-16 shrink-0 items-center gap-3 border-b border-slate-200/70 bg-white/70 px-4 backdrop-blur-md dark:border-white/10 dark:bg-[#081510]/70 lg:px-8">
           <button
             onClick={() => setMobileOpen(true)}
             className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/10 lg:hidden focus-ring"
@@ -165,35 +178,29 @@ export function DashboardShell({ user, role, accent = "indigo", accentName, navI
           </div>
         </header>
 
-        <main className="px-4 py-6 lg:px-8 lg:py-8">
-          <motion.div
-            initial={{ opacity: 0, x: 16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            key={pathname}
-          >
-            {children}
-          </motion.div>
+        <main id="dashboard-main-scroll" className="min-h-0 flex-1 overflow-y-auto px-4 py-6 pb-24 lg:px-8 lg:py-8 lg:pb-10">
+          {children}
         </main>
       </div>
 
       {/* Mobile bottom nav */}
-      <nav className="fixed bottom-0 left-0 right-0 z-30 flex items-center justify-around border-t border-slate-200 bg-white/90 backdrop-blur-md dark:border-white/10 dark:bg-[#052e16]/90 lg:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 z-30 flex items-center justify-around border-t border-slate-200 bg-white/90 backdrop-blur-md dark:border-white/10 dark:bg-[#052e16]/90 lg:hidden" aria-label="Navigasi cepat">
         {navItems.slice(0, 5).map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
           return (
-            <TransitionLink
+            <Link
               key={item.href}
               href={item.href}
               onClick={closeMobile}
+              aria-current={isActive ? "page" : undefined}
               className={cn(
-                "flex flex-col items-center gap-1 py-2.5 text-[10px] transition-colors",
+                "flex flex-col items-center gap-1 py-2.5 text-[10px] transition-colors active:scale-95",
                 isActive ? styles.text : "text-slate-400"
               )}
             >
               <item.icon className="h-5 w-5" />
               <span className="max-w-16 truncate">{item.label}</span>
-            </TransitionLink>
+            </Link>
           );
         })}
       </nav>
@@ -201,7 +208,7 @@ export function DashboardShell({ user, role, accent = "indigo", accentName, navI
   );
 }
 
-function NavContent({ user, role, accent, accentName, navItems, pathname, mobile, onNavigate }) {
+function NavContent({ role, accent, accentName, navItems, pathname, mobile, onNavigate, onLogout }) {
   const styles = ACCENT_STYLES[accent];
   return (
     <div className="flex h-full flex-col">
@@ -216,43 +223,45 @@ function NavContent({ user, role, accent, accentName, navItems, pathname, mobile
         </div>
       </div>
 
-      <div className="no-scrollbar flex-1 space-y-1 overflow-y-auto px-3">
+      <div className="no-scrollbar flex-1 space-y-1 overflow-y-auto px-3" role="navigation">
         {navItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
           return (
-            <TransitionLink
+            <Link
               key={item.href}
               href={item.href}
               onClick={onNavigate}
+              aria-current={isActive ? "page" : undefined}
               className={cn(
                 "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
                 isActive
-                  ? styles.active
+                  ? styles.text
                   : "text-slate-500 dark:text-slate-400 hover:bg-slate-900/5 dark:hover:bg-white/5 hover:text-slate-800 dark:hover:text-slate-200"
               )}
             >
               {isActive && (
                 <motion.span
-                  layoutId={`nav-active-${accent}-${mobile ? "m" : "d"}`}
-                  className="absolute left-0 h-6 w-1 rounded-r-full bg-current opacity-60"
-                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  layoutId={`nav-pill-${accent}-${mobile ? "m" : "d"}`}
+                  className="absolute inset-0 rounded-xl bg-gradient-to-r from-white/70 to-white/35 ring-1 ring-green-500/20 shadow-sm backdrop-blur-sm dark:from-white/10 dark:to-white/5 dark:ring-green-400/20"
+                  transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+                  style={{ willChange: "transform" }}
                 />
               )}
-              <item.icon className="h-[18px] w-[18px] transition-transform group-hover:scale-110" />
-              {item.label}
-            </TransitionLink>
+              <item.icon className="relative z-10 h-[18px] w-[18px] transition-transform group-hover:scale-110" />
+              <span className="relative z-10">{item.label}</span>
+            </Link>
           );
         })}
       </div>
 
       <div className="border-t border-slate-100 p-3 dark:border-white/10">
-        <div className="flex items-center gap-3 rounded-2xl bg-slate-100/70 p-3 dark:bg-white/[0.04]">
-          <Avatar name={user?.name} />
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold">{user?.name}</p>
-            <p className="truncate text-xs text-slate-400">{user?.subtitle}</p>
-          </div>
-          <button className="rounded p-1 text-slate-400 transition-colors hover:text-rose-500 focus-ring">
+        <div className="flex items-center justify-between gap-3 rounded-2xl bg-slate-100/70 px-3 py-2.5 dark:bg-white/[0.04]">
+          <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{role}</span>
+          <button
+            onClick={onLogout}
+            aria-label="Keluar"
+            className="rounded p-1 text-slate-400 transition-colors hover:text-rose-500 focus-ring"
+          >
             <LogOut className="h-4 w-4" />
           </button>
         </div>

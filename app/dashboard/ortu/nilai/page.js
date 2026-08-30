@@ -19,6 +19,7 @@ import {
 // recharts dimuat lazy agar tidak membebani first-load halaman.
 const BarCompareChart = dynamic(() => import("@/components/charts/bar-compare"), {
   ssr: false,
+  preload: true,
   loading: () => <Skeleton className="h-[220px] w-full" />,
 });
 

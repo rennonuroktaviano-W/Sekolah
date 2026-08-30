@@ -26,6 +26,7 @@ import {
 // recharts dimuat lazy agar tidak membebani first-load halaman.
 const RadialDistChart = dynamic(() => import("@/components/charts/radial-dist"), {
   ssr: false,
+  preload: true,
   loading: () => <Skeleton className="h-[200px] w-full" />,
 });
 
@@ -48,7 +49,7 @@ export default function GuruOverview() {
     <div className="space-y-6">
       <div>
         <h1 className="font-display text-2xl font-bold">
-          Hallo, {users.guru.name} 👋
+          Hallo, Selamat datang 👋
         </h1>
         <p className="text-sm text-slate-500 dark:text-slate-400">
           Pengampu {users.guru.mapel} · Semester Ganjil 2025/2026

@@ -1,6 +1,7 @@
 "use client";
 
 import { DashboardShell } from "@/components/dashboard-shell";
+import { DashboardContentTransition } from "@/components/ui/dashboard-content-transition";
 import { users } from "@/data";
 import {
   LayoutDashboard,
@@ -33,7 +34,7 @@ export default function AdminLayout({ children }) {
       accentName="Admin CMS"
       navItems={adminNav}
     >
-      {children}
+      <DashboardContentTransition>{children}</DashboardContentTransition>
     </DashboardShell>
   );
 }
